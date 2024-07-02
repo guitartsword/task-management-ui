@@ -12,7 +12,7 @@ export async function updateTask(id: number, task: FormData) {
     due_date: String(task.get('due_date') || ''),
     status: task.get('status') as Task['status'],
   }
-  const res = await fetch(`${config.BASE_URL}/tasks/${id}`, {
+  const res = await fetch(`${config.API_BASE_URL}/tasks/${id}`, {
     method: 'PUT',
     next: {
       tags: ['tasks']
@@ -39,7 +39,7 @@ export async function createTask(task: FormData) {
   if (newDueDate) {
     taskBody.due_date = newDueDate
   }
-  await fetch(`${config.BASE_URL}/tasks`, {
+  await fetch(`${config.API_BASE_URL}/tasks`, {
     method: 'POST',
     next: {
       tags: ['tasks']
@@ -53,7 +53,7 @@ export async function createTask(task: FormData) {
 }
 
 export async function deleteTask(id: number) {
-  await fetch(`${config.BASE_URL}/tasks/${id}`, {
+  await fetch(`${config.API_BASE_URL}/tasks/${id}`, {
     method: 'DELETE',
     next: {
       tags: ['tasks']

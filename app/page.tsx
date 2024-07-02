@@ -4,13 +4,15 @@ import TaskColumnStatus from '@/app/components/TaskColumnStatus';
 import { Task } from '@/app/types/task';
 import { config } from './config';
 
+export const dynamic = 'force-dynamic'
+
 interface TaskResponse {
   data: Task[];
   count: number;
 }
 
 async function getTasks() {
-  const res = await fetch(`${config.BASE_URL}/tasks/?limit=100`, {
+  const res = await fetch(`${config.API_BASE_URL}/tasks/?limit=100`, {
     next: {
       tags: ['tasks'],
       revalidate: 60,
@@ -76,7 +78,7 @@ const tasks: Task[] = [
 ];
 
 export default async function Home() {
-  const { data: tasks, count } = await getTasks();
+  const { data: tasks } = await getTasks();
   const todo = tasks
     .filter((t) => t.status === 'todo')
     .map((t) => <TaskCard key={t.id} task={t} />);

@@ -4,7 +4,7 @@ import { submitSaveOrDelete } from './actions';
 import Link from 'next/link';
 
 async function getData(id: number) {
-  const res = await fetch(`${config.BASE_URL}/tasks/${id}`, {
+  const res = await fetch(`${config.API_BASE_URL}/tasks/${id}`, {
     next: {
       tags: ['tasks'],
       revalidate: 60
@@ -73,11 +73,11 @@ export default async function TaskDetail({
           <input
             type="datetime-local"
             id="due_date"
+            step="1"
             name="due_date"
             defaultValue={task.due_date.split('.')[0]}
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
-          <p>{task.due_date}</p>
         </div>
         <div className="flex items-center justify-end">
           <Link

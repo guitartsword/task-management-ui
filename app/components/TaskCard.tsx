@@ -11,34 +11,33 @@ interface TaskCardProps {
   click?: () => {};
 }
 
-export default function TaskCard({
-  task, click
-}: TaskCardProps) {
+export default function TaskCard({ task, click }: TaskCardProps) {
   const [, drag] = useDrag(() => ({
     type: ItemTypes.task,
     item: task,
     end(item, monitor) {
-      const dropResult = monitor.getDropResult<{status: Task['status']}>();
+      const dropResult = monitor.getDropResult<{ status: Task['status'] }>();
       if (!dropResult || dropResult?.status === item.status) {
-        return
+        return;
       }
-      const formData = new FormData()
+      const formData = new FormData();
       Object.entries(item).forEach(([key, value]) => {
-        formData.set(key, value)
-      })
-      formData.set('status', dropResult.status)
-      updateTask(item.id, formData)
+        formData.set(key, value);
+      });
+      formData.set('status', dropResult.status);
+      updateTask(item.id, formData);
     },
   }));
-  return (
-    <Link
-      href={`/tasks/${task.id}`}
-      ref={drag}
-      onClick={click}
-      className="block bg-white shadow-md rounded-lg p-4 mb-4 cursor-move"
-    >
-      <h3 className="font-semibold text-lg">{task.title}</h3>
-      <p className="text-gray-600">{task.description}</p>
-    </Link>
+  return drag(
+    <span>
+      <Link
+        href={`/tasks/${task.id}`}
+        onClick={click}
+        className="block bg-white shadow-md rounded-lg p-4 mb-4 cursor-move"
+      >
+        <h3 className="font-semibold text-lg">{task.title}</h3>
+        <p className="text-gray-600">{task.description}</p>
+      </Link>
+    </span>
   );
 }

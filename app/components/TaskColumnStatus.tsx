@@ -39,8 +39,8 @@ export default function TaskColumnStatus({
     droppableClass = 'bg-green-200'
   }
 
-  return (
-    <div ref={drop} className={droppableClass}>
+  return drop(
+    <div className={droppableClass}>
       <h2 className="text-2xl font-semibold mb-4">{title}</h2>
       {children}
     </div>
