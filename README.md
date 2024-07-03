@@ -2,7 +2,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Requirements
 
-This are the recommended versions of each tool to use:
+These are the recommended versions of each tool to use:
 * node (>= v18.0.0)
 * npm (>= v10.7.0)
 * Clone and run the [API server running](https://github.com/guitartsword/task-management-api)
@@ -53,7 +53,7 @@ docker run --rm --name task-management-ui -p 3000:3000 -it -e API_BASE_URL=http:
 
 ### Environmental Variables
 
-This are the required environmental variables to have in a production environment:
+These are the required environmental variables to have in a production environment:
 ```sh
 API_BASE_URL=
 # https://next-auth.js.org/configuration/options#environment-variables
