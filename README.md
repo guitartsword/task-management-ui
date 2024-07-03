@@ -13,6 +13,17 @@ This are the recommended versions of each tool to use:
 
 ```bash
 npm install
+touch .env.local
+```
+
+Edit the `.env.local` file and the following contents:
+```sh
+API_BASE_URL=http://localhost:8000/api/v1
+NEXTAUTH_SECRET=hjkasdhjkashkjdaskjhdjh18u273hacs
+```
+
+Now you can run the dev server:
+```
 npm run dev
 ```
 
