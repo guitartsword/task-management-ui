@@ -1,5 +1,6 @@
-import { createTask } from '../tasks/[id]/actions';
+import { useSession } from 'next-auth/react';
 import { Task } from '../types/task';
+import { createTask } from '@/app/tasks/[id]/actions';
 
 interface CardFormProps {
   status: Task['status'];
@@ -7,10 +8,16 @@ interface CardFormProps {
 }
 
 export default function BasicCreateTaskCard({ status, onSubmit }: CardFormProps) {
+  const { data: session } = useSession()
+  console.log(session)
   return (
     <form
       action={async (formData) => {
-        createTask(formData);
+        if (!session) {
+          return
+        }
+        console.log(session)
+        await createTask(formData, session.user.token);
         if (onSubmit) {
           onSubmit()
         }

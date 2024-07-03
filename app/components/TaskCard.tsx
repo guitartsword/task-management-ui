@@ -5,6 +5,7 @@ import { Task } from '@/app/types/task';
 import Link from 'next/link';
 import { config } from '../config';
 import { updateTask } from '../tasks/[id]/actions';
+import { useSession } from 'next-auth/react';
 
 interface TaskCardProps {
   task: Task;
@@ -12,10 +13,14 @@ interface TaskCardProps {
 }
 
 export default function TaskCard({ task, click }: TaskCardProps) {
+  const {data: session} = useSession();
   const [, drag] = useDrag(() => ({
     type: ItemTypes.task,
     item: task,
     end(item, monitor) {
+      if (!session) {
+        return;
+      }
       const dropResult = monitor.getDropResult<{ status: Task['status'] }>();
       if (!dropResult || dropResult?.status === item.status) {
         return;
@@ -25,7 +30,7 @@ export default function TaskCard({ task, click }: TaskCardProps) {
         formData.set(key, value);
       });
       formData.set('status', dropResult.status);
-      updateTask(item.id, formData);
+      updateTask(item.id, formData, session.user.token);
     },
   }));
   return drag(

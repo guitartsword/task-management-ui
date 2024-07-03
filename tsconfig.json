@@ -3,6 +3,7 @@
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
+    "typeRoots": ["next-auth.d.ts"],
     "strict": true,
     "noEmit": true,
     "esModuleInterop": true,

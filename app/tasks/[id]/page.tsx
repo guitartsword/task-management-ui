@@ -1,18 +1,31 @@
-import { config } from '@/app/config';
-import { Task } from '@/app/types/task';
-import { submitSaveOrDelete } from './actions';
+import { getServerSession } from 'next-auth';
 import Link from 'next/link';
 
+import { config } from '@/app/config';
+import { Task } from '@/app/types/task';
+import { authOptions } from '@/app/api/auth/[...nextauth]/config';
+import { submitSaveOrDelete } from './actions';
+import { redirect } from 'next/navigation';
+
 async function getData(id: number) {
+  const session = await getServerSession(authOptions);
+  if (!session) {
+    return redirect('/api/auth/signin')
+  }
   const res = await fetch(`${config.API_BASE_URL}/tasks/${id}`, {
     next: {
       tags: ['tasks'],
       revalidate: 60
+    },
+    headers: {
+      'Authorization': session.user.token,
     }
   })
   
   if (!res.ok) {
-    throw new Error('Failed to fetch data')
+    const json = await res.json()
+    // console.log(res, text)
+    throw new Error(json.detail)
   }
   return res.json() as Promise<Task>
 }

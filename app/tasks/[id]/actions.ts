@@ -1,11 +1,13 @@
 'use server';
 
+import { authOptions } from '@/app/api/auth/[...nextauth]/config';
 import { config } from '@/app/config';
 import { Task } from '@/app/types/task';
+import { getServerSession } from 'next-auth';
 import { revalidateTag } from 'next/cache';
 import { redirect } from 'next/navigation';
 
-export async function updateTask(id: number, task: FormData) {
+export async function updateTask(id: number, task: FormData, token: string) {
   const taskBody: Omit<Task, 'id'> = {
     title: String(task.get('title') || ''),
     description: String(task.get('description') || ''),
@@ -18,7 +20,8 @@ export async function updateTask(id: number, task: FormData) {
       tags: ['tasks']
     },
     headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': token,
     },
     body: JSON.stringify(taskBody),
   });
@@ -26,7 +29,7 @@ export async function updateTask(id: number, task: FormData) {
   redirect('/')
 }
 
-export async function createTask(task: FormData) {
+export async function createTask(task: FormData, token: string) {
   const taskBody: Partial<Omit<Task, 'id'>> & Omit<Task, 'id'|'status'|'due_date'> = {
     title: String(task.get('title') || ''),
     description: String(task.get('description') || ''),
@@ -45,18 +48,22 @@ export async function createTask(task: FormData) {
       tags: ['tasks']
     },
     headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': token,
     },
     body: JSON.stringify(taskBody),
   });
   revalidateTag('tasks')
 }
 
-export async function deleteTask(id: number) {
+export async function deleteTask(id: number, token: string) {
   await fetch(`${config.API_BASE_URL}/tasks/${id}`, {
     method: 'DELETE',
     next: {
       tags: ['tasks']
+    },
+    headers: {
+      'Authorization': token,
     },
   });
   revalidateTag('tasks')
@@ -64,10 +71,15 @@ export async function deleteTask(id: number) {
 }
 
 export async function submitSaveOrDelete(id: number, formData: FormData) {
+  const session = await getServerSession(authOptions);
+  if (!session) {
+    return redirect('/api/auth/signin');
+  }
+  const token = session.user.token;
   if (formData.get('action') === 'save') {
-    await updateTask(id, formData)
+    await updateTask(id, formData, token)
   }
   if (formData.get('action') === 'delete') {
-    await deleteTask(id)
+    await deleteTask(id, token)
   }
 }
